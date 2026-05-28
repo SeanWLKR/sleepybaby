@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>妈妈哄睡 - 首页</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+    background: linear-gradient(135deg, #e8e4ff 0%, #f5f3ff 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem 1rem;
+  }
+
+  .phone {
+    width: 375px;
+    background: #f4f2ff;
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow: 0 32px 64px rgba(109,84,255,0.18), 0 0 0 1px rgba(109,84,255,0.12);
+  }
+
+  .screen {
+    height: 100vh;
+    max-height: 780px;
+    display: flex;
+    flex-direction: column;
+    background: #f4f2ff;
+  }
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* Status bar */
+  .status-bar {
+    background: #6d54ff;
+    padding: 14px 20px 8px;
+    display: flex; justify-content: space-between; align-items: center;
+    color: white; font-size: 12px; font-weight: 600;
+  }
+
+  /* Top nav */
+  .top-nav {
+    background: #6d54ff;
+    padding: 8px 16px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .top-nav .title { color: white; font-size: 17px; font-weight: 600; }
+  .nav-right { display: flex; gap: 10px; align-items: center; }
+  .nav-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border: none;
+  }
+  .nav-btn i { color: white; font-size: 16px; }
+
+  /* Banner */
+  .banner {
+    background: linear-gradient(135deg, #7c6aff 0%, #5b44e8 100%);
+    padding: 18px 20px;
+    position: relative; overflow: hidden; min-height: 130px;
+    display: flex; align-items: center;
+  }
+  .banner-text { flex: 1; }
+  .banner-text h2 { color: white; font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .banner-text p { color: rgba(255,255,255,0.85); font-size: 13px; }
+  .banner-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
+  .banner-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+  .banner-dot.active { background: white; width: 16px; border-radius: 3px; }
+  .banner-illus { width: 110px; height: 100px; position: relative; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .moon { width: 38px; height: 38px; background: #ffd966; border-radius: 50%; position: absolute; top: 4px; right: 10px; }
+  .star { position: absolute; background: #ffd966; width: 4px; height: 4px; border-radius: 50%; }
+  .mom-figure { width: 56px; height: 70px; background: #e8813a; border-radius: 28px 28px 10px 10px; position: absolute; bottom: 0; right: 24px; }
+  .mom-head { width: 28px; height: 28px; background: #f4a966; border-radius: 50%; position: absolute; top: -14px; left: 50%; transform: translateX(-50%); }
+  .child-figure { width: 38px; height: 48px; background: #b7a2fd; border-radius: 20px 20px 8px 8px; position: absolute; bottom: 0; right: 2px; }
+  .child-head { width: 22px; height: 22px; background: #f4c190; border-radius: 50%; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); }
+
+  /* Section */
+  .section { background: white; margin: 10px 0 0; padding: 16px; }
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .section-title { font-size: 15px; font-weight: 600; color: #1a1a2e; display: flex; align-items: center; gap: 6px; }
+  .section-more { font-size: 13px; color: #6d54ff; display: flex; align-items: center; }
+  .play-circle { width: 22px; height: 22px; border-radius: 50%; background: #6d54ff; display: inline-flex; align-items: center; justify-content: center; }
+  .play-circle i { color: white; font-size: 10px; }
+
+  /* Voice cards */
+  .voice-list { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+  .voice-list::-webkit-scrollbar { display: none; }
+  .voice-card {
+    flex-shrink: 0; width: 90px; background: #f8f6ff;
+    border-radius: 12px; padding: 10px; cursor: pointer;
+    border: 2px solid transparent; transition: border-color 0.2s;
+    text-align: center; position: relative;
+  }
+  .voice-card.active { border-color: #6d54ff; }
+  .voice-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    margin: 0 auto 6px; overflow: hidden; position: relative;
+  }
+  .avatar-mom { background: linear-gradient(135deg, #f4a966, #e8813a); }
+  .avatar-dad { background: linear-gradient(135deg, #7ec8e3, #4a9aba); }
+  .avatar-add { background: #ede9ff; border: 2px dashed #b7a2fd; display: flex; align-items: center; justify-content: center; }
+  .avatar-add i { color: #6d54ff; font-size: 20px; }
+  .check-badge {
+    position: absolute; bottom: 0; right: 0;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: #00dc1d; display: flex; align-items: center; justify-content: center;
+  }
+  .check-badge i { color: white; font-size: 9px; }
+  .voice-name { font-size: 12px; font-weight: 600; color: #1a1a2e; }
+  .voice-mins { font-size: 10px; color: #888; margin-top: 2px; }
+  .manage-btn { font-size: 12px; color: #6d54ff; cursor: pointer; }
+
+  /* Quick functions */
+  .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .quick-card {
+    background: #f8f6ff; border-radius: 12px; padding: 12px;
+    position: relative; overflow: hidden; cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .quick-card:active { transform: scale(0.97); }
+  .quick-card-title { font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 3px; }
+  .quick-card-desc { font-size: 11px; color: #888; line-height: 1.4; }
+  .quick-play-btn {
+    position: absolute; right: 10px; bottom: 10px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #eb7564; display: flex; align-items: center; justify-content: center;
+  }
+  .quick-play-btn i { color: white; font-size: 12px; }
+  .history-link { font-size: 11px; color: #6d54ff; margin-top: 6px; }
+
+  /* Story row */
+  .story-row { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  .story-row::-webkit-scrollbar { display: none; }
+  .story-card { flex-shrink: 0; width: 82px; cursor: pointer; }
+  .story-thumb {
+    width: 82px; height: 82px; border-radius: 10px;
+    background: linear-gradient(135deg, #c5bafa, #a89cf4);
+    margin-bottom: 6px; position: relative; overflow: hidden;
+  }
+  .thumb-inner { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .thumb-icon { font-size: 28px; opacity: 0.85; }
+  .story-name { font-size: 11px; color: #333; line-height: 1.3; }
+
+  /* Now playing bar */
+  .now-playing {
+    background: rgba(255,255,255,0.96);
+    border-top: 0.5px solid rgba(109,84,255,0.15);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 12px;
+    flex-shrink: 0;
+  }
+  .disc {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: linear-gradient(135deg, #6d54ff, #9b8bff);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; animation: spin 6s linear infinite;
+  }
+  .disc i { color: white; font-size: 18px; }
+  .disc.paused { animation-play-state: paused; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .playing-info { flex: 1; }
+  .playing-title { font-size: 13px; font-weight: 600; color: #1a1a2e; }
+  .playing-sub { font-size: 11px; color: #888; margin-top: 1px; }
+  .play-controls { display: flex; align-items: center; gap: 12px; }
+  .ctrl-btn { background: none; border: none; cursor: pointer; padding: 4px; }
+  .ctrl-btn.main {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #6d54ff; display: flex; align-items: center; justify-content: center;
+  }
+  .ctrl-btn.main i { color: white; font-size: 16px; }
+  .ctrl-btn i { color: #6d54ff; font-size: 18px; }
+
+  /* Bottom tabs */
+  .bottom-tabs {
+    background: white; border-top: 0.5px solid #e8e4ff;
+    display: flex; padding: 8px 0 20px;
+    flex-shrink: 0;
+  }
+  .tab-btn {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    background: none; border: none; cursor: pointer; padding: 4px 0;
+  }
+  .tab-btn i { font-size: 22px; color: #bbb; }
+  .tab-btn.active i { color: #6d54ff; }
+  .tab-btn span { font-size: 10px; color: #bbb; }
+  .tab-btn.active span { color: #6d54ff; }
+
+  /* thumb color variants */
+  .thumb-prenatal { background: linear-gradient(135deg, #ffd6e7, #ff9ec4); }
+  .thumb-soothe { background: linear-gradient(135deg, #d6eaff, #7ec8e3); }
+  .thumb-cognitive { background: linear-gradient(135deg, #d6ffd6, #7ec87e); }
+  .thumb-classic { background: linear-gradient(135deg, #ffe4d6, #ffb07e); }
+  .thumb-today { background: linear-gradient(135deg, #e4d6ff, #b7a2fd); }
+
+  /* 手机端直接全屏 */
+  @media (max-width: 430px) {
+    body { padding: 0; background: #f4f2ff; align-items: stretch; }
+    .phone { width: 100%; border-radius: 0; box-shadow: none; }
+    .screen { height: 100dvh; max-height: none; }
+  }</style>
+</head>
+<body>
+<div class="phone">
+  <div class="screen">
+    <div class="scroll-content">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <i class="ti ti-signal-4g" style="font-size:14px;"></i>
+        <i class="ti ti-wifi" style="font-size:14px;"></i>
+        <i class="ti ti-battery" style="font-size:14px;"></i>
+      </div>
+    </div>
+
+    <!-- Top nav -->
+    <div class="top-nav">
+      <span class="title">妈妈哄睡</span>
+      <div class="nav-right">
+        <button class="nav-btn"><i class="ti ti-dots"></i></button>
+        <button class="nav-btn"><i class="ti ti-brand-hipchat"></i></button>
+      </div>
+    </div>
+
+    <!-- Banner -->
+    <div class="banner">
+      <div class="banner-text">
+        <h2>妈妈哄睡</h2>
+        <p>让爱日夜陪伴</p>
+      </div>
+      <div class="banner-illus">
+        <div class="moon"></div>
+        <div class="star" style="top:18px;left:8px;"></div>
+        <div class="star" style="top:30px;left:22px;width:3px;height:3px;"></div>
+        <div class="star" style="top:8px;left:36px;width:3px;height:3px;"></div>
+        <div class="mom-figure"><div class="mom-head"></div></div>
+        <div class="child-figure"><div class="child-head"></div></div>
+      </div>
+      <div class="banner-dots">
+        <div class="banner-dot active"></div>
+        <div class="banner-dot"></div>
+        <div class="banner-dot"></div>
+      </div>
+    </div>
+
+    <!-- Voice selector -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">🎤 今天想听谁的声音？</span>
+        <span class="manage-btn">管理声音 ›</span>
+      </div>
+      <div class="voice-list">
+        <div class="voice-card active" onclick="selectVoice(this)">
+          <div class="voice-avatar avatar-mom" style="position:relative;">
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+              <i class="ti ti-user-circle" style="font-size:28px;color:white;"></i>
+            </div>
+            <div class="check-badge"><i class="ti ti-check"></i></div>
+          </div>
+          <div class="voice-name">妈妈声音</div>
+          <div class="voice-mins">已陪伴186分钟</div>
+        </div>
+        <div class="voice-card" onclick="selectVoice(this)">
+          <div class="voice-avatar avatar-dad" style="position:relative;">
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+              <i class="ti ti-user-circle" style="font-size:28px;color:white;"></i>
+            </div>
+          </div>
+          <div class="voice-name">爸爸声音</div>
+          <div class="voice-mins">已陪伴134分钟</div>
+        </div>
+        <div class="voice-card" style="opacity:0.85;">
+          <div class="voice-avatar avatar-add">
+            <i class="ti ti-plus"></i>
+          </div>
+          <div class="voice-name">添加声音</div>
+          <div class="voice-mins">解锁更多角色</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick functions -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">📱 快捷功能</span>
+      </div>
+      <div class="quick-grid">
+        <div class="quick-card" onclick="handleQuickPlay(this,'快速哄睡')">
+          <div class="quick-card-title">快速哄睡 💤</div>
+          <div class="quick-card-desc">自动播放故事<br>30分钟后自动停止</div>
+          <div class="quick-play-btn"><i class="ti ti-player-play-filled"></i></div>
+        </div>
+        <div class="quick-card" onclick="handleQuickPlay(this,'胎教模式')">
+          <div class="quick-card-title">胎教模式 🤰</div>
+          <div class="quick-card-desc">精选胎教故事<br>30分钟后自动停止</div>
+          <div class="quick-play-btn"><i class="ti ti-player-play-filled"></i></div>
+        </div>
+        <div class="quick-card" onclick="handleQuickPlay(this,'婴儿哄睡')">
+          <div class="quick-card-title">婴儿哄睡 👼</div>
+          <div class="quick-card-desc">模拟子宫音(羊水+心跳)<br>30分钟后自动停止</div>
+          <div class="quick-play-btn"><i class="ti ti-player-play-filled"></i></div>
+        </div>
+        <div class="quick-card">
+          <div class="quick-card-title">历史记录 ⏰</div>
+          <div class="quick-card-desc">查看播放记录</div>
+          <div class="history-link">查看播放记录 »</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Today recommend -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">📅 今日推荐 <div class="play-circle"><i class="ti ti-player-play-filled"></i></div></span>
+        <span class="section-more">更多 <i class="ti ti-chevron-right" style="font-size:12px;"></i></span>
+      </div>
+      <div class="story-row">
+        <div class="story-card" onclick="playStory('大脚丫的奇妙旅程')">
+          <div class="story-thumb thumb-today"><div class="thumb-inner"><span class="thumb-icon">🦶</span></div></div>
+          <div class="story-name">大脚丫的奇妙旅程</div>
+        </div>
+        <div class="story-card" onclick="playStory('星星和月亮')">
+          <div class="story-thumb thumb-today" style="background:linear-gradient(135deg,#d6c8ff,#9b8bff)"><div class="thumb-inner"><span class="thumb-icon">🌙</span></div></div>
+          <div class="story-name">星星和月亮</div>
+        </div>
+        <div class="story-card" onclick="playStory('小熊睡觉了')">
+          <div class="story-thumb thumb-today" style="background:linear-gradient(135deg,#ffd6c8,#ffb07e)"><div class="thumb-inner"><span class="thumb-icon">🐻</span></div></div>
+          <div class="story-name">小熊睡觉了</div>
+        </div>
+        <div class="story-card" onclick="playStory('云朵的梦')">
+          <div class="story-thumb thumb-today" style="background:linear-gradient(135deg,#c8e8ff,#7ec8e3)"><div class="thumb-inner"><span class="thumb-icon">☁️</span></div></div>
+          <div class="story-name">云朵的梦</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prenatal -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">🤰 胎教专区 <div class="play-circle"><i class="ti ti-player-play-filled"></i></div></span>
+        <span class="section-more">更多 <i class="ti ti-chevron-right" style="font-size:12px;"></i></span>
+      </div>
+      <div class="story-row">
+        <div class="story-card" onclick="playStory('胎教轻音乐')">
+          <div class="story-thumb thumb-prenatal"><div class="thumb-inner"><span class="thumb-icon">🎵</span></div></div>
+          <div class="story-name">胎教轻音乐</div>
+        </div>
+        <div class="story-card" onclick="playStory('胎教睡眠故事')">
+          <div class="story-thumb thumb-prenatal" style="background:linear-gradient(135deg,#ffe0ee,#ff9ec4)"><div class="thumb-inner"><span class="thumb-icon">📖</span></div></div>
+          <div class="story-name">胎教睡眠故事</div>
+        </div>
+        <div class="story-card" onclick="playStory('胎教钢琴曲')">
+          <div class="story-thumb thumb-prenatal" style="background:linear-gradient(135deg,#ffd6e7,#e87fb4)"><div class="thumb-inner"><span class="thumb-icon">🎹</span></div></div>
+          <div class="story-name">胎教钢琴曲</div>
+        </div>
+        <div class="story-card" onclick="playStory('古典胎教乐')">
+          <div class="story-thumb thumb-prenatal" style="background:linear-gradient(135deg,#ffe8f0,#ffb3ce)"><div class="thumb-inner"><span class="thumb-icon">🎻</span></div></div>
+          <div class="story-name">古典胎教乐</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Soothe -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">👶 情绪安抚 <div class="play-circle"><i class="ti ti-player-play-filled"></i></div></span>
+        <span class="section-more">更多 <i class="ti ti-chevron-right" style="font-size:12px;"></i></span>
+      </div>
+      <div class="story-row">
+        <div class="story-card" onclick="playStory('白噪音安抚')">
+          <div class="story-thumb thumb-soothe"><div class="thumb-inner"><span class="thumb-icon">🌊</span></div></div>
+          <div class="story-name">白噪音安抚</div>
+        </div>
+        <div class="story-card" onclick="playStory('轻柔雨声')">
+          <div class="story-thumb thumb-soothe" style="background:linear-gradient(135deg,#d0e8ff,#6db3f2)"><div class="thumb-inner"><span class="thumb-icon">🌧️</span></div></div>
+          <div class="story-name">轻柔雨声</div>
+        </div>
+        <div class="story-card" onclick="playStory('妈妈心跳声')">
+          <div class="story-thumb thumb-soothe" style="background:linear-gradient(135deg,#d6f4ff,#7ec8e3)"><div class="thumb-inner"><span class="thumb-icon">💓</span></div></div>
+          <div class="story-name">妈妈心跳声</div>
+        </div>
+        <div class="story-card" onclick="playStory('经典摇篮曲')">
+          <div class="story-thumb thumb-soothe" style="background:linear-gradient(135deg,#e0f4ff,#a0d8ef)"><div class="thumb-inner"><span class="thumb-icon">🎶</span></div></div>
+          <div class="story-name">经典摇篮曲</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cognitive -->
+    <div class="section">
+      <div class="section-header">
+        <span class="section-title">📚 认知启蒙 <div class="play-circle"><i class="ti ti-player-play-filled"></i></div></span>
+        <span class="section-more">更多 <i class="ti ti-chevron-right" style="font-size:12px;"></i></span>
+      </div>
+      <div class="story-row">
+        <div class="story-card" onclick="playStory('奇妙动物世界')">
+          <div class="story-thumb thumb-cognitive"><div class="thumb-inner"><span class="thumb-icon">🦁</span></div></div>
+          <div class="story-name">奇妙动物世界</div>
+        </div>
+        <div class="story-card" onclick="playStory('数字启蒙')">
+          <div class="story-thumb thumb-cognitive" style="background:linear-gradient(135deg,#d6ffd6,#7ec87e)"><div class="thumb-inner"><span class="thumb-icon">🔢</span></div></div>
+          <div class="story-name">数字启蒙</div>
+        </div>
+        <div class="story-card" onclick="playStory('颜色的世界')">
+          <div class="story-thumb thumb-cognitive" style="background:linear-gradient(135deg,#e0ffd6,#96e07e)"><div class="thumb-inner"><span class="thumb-icon">🌈</span></div></div>
+          <div class="story-name">颜色的世界</div>
+        </div>
+        <div class="story-card" onclick="playStory('自然科学探索')">
+          <div class="story-thumb thumb-cognitive" style="background:linear-gradient(135deg,#d6ffe0,#7ec896)"><div class="thumb-inner"><span class="thumb-icon">🌿</span></div></div>
+          <div class="story-name">自然科学探索</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Classic -->
+    <div class="section" style="margin-bottom:0;">
+      <div class="section-header">
+        <span class="section-title">🤖 经典故事 <div class="play-circle"><i class="ti ti-player-play-filled"></i></div></span>
+        <span class="section-more">更多 <i class="ti ti-chevron-right" style="font-size:12px;"></i></span>
+      </div>
+      <div class="story-row" style="padding-bottom:16px;">
+        <div class="story-card" onclick="playStory('丑小鸭')">
+          <div class="story-thumb thumb-classic"><div class="thumb-inner"><span class="thumb-icon">🦢</span></div></div>
+          <div class="story-name">丑小鸭</div>
+        </div>
+        <div class="story-card" onclick="playStory('小红帽')">
+          <div class="story-thumb thumb-classic" style="background:linear-gradient(135deg,#ffe4d6,#ff8a66)"><div class="thumb-inner"><span class="thumb-icon">🐺</span></div></div>
+          <div class="story-name">小红帽</div>
+        </div>
+        <div class="story-card" onclick="playStory('三只小猪')">
+          <div class="story-thumb thumb-classic" style="background:linear-gradient(135deg,#ffebd6,#ffa07e)"><div class="thumb-inner"><span class="thumb-icon">🐷</span></div></div>
+          <div class="story-name">三只小猪</div>
+        </div>
+        <div class="story-card" onclick="playStory('睡美人')">
+          <div class="story-thumb thumb-classic" style="background:linear-gradient(135deg,#ffddd6,#ff9b7e)"><div class="thumb-inner"><span class="thumb-icon">👸</span></div></div>
+          <div class="story-name">睡美人</div>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- end scroll-content -->
+
+    <!-- Now playing bar -->
+    <div class="now-playing">
+      <div class="disc" id="disc"><i class="ti ti-music"></i></div>
+      <div class="playing-info">
+        <div class="playing-title" id="playTitle">正在播放</div>
+        <div class="playing-sub" id="playSub">正在使用 妈妈声音</div>
+      </div>
+      <div class="play-controls">
+        <button class="ctrl-btn main" onclick="togglePlay()">
+          <i class="ti ti-player-pause-filled" id="playIcon"></i>
+        </button>
+        <button class="ctrl-btn" onclick="nextTrack()">
+          <i class="ti ti-player-skip-forward-filled"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom tabs -->
+    <div class="bottom-tabs">
+      <button class="tab-btn active" onclick="switchTab(this)">
+        <i class="ti ti-home-2"></i>
+        <span>首页</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab(this)">
+        <i class="ti ti-user-circle"></i>
+        <span>我的</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let isPlaying = true;
+  let currentTrack = '大脚丫的奇妙旅程';
+  const tracks = ['大脚丫的奇妙旅程','星星和月亮','小熊睡觉了','云朵的梦','白噪音安抚','丑小鸭','三只小猪','小红帽'];
+
+  function selectVoice(el) {
+    document.querySelectorAll('.voice-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    const name = el.querySelector('.voice-name').textContent;
+    if (name !== '添加声音') {
+      document.getElementById('playSub').textContent = '正在使用 ' + name;
+    }
+  }
+
+  function handleQuickPlay(el, mode) {
+    currentTrack = mode;
+    document.getElementById('playTitle').textContent = mode;
+    isPlaying = true;
+    document.getElementById('disc').classList.remove('paused');
+    document.getElementById('playIcon').className = 'ti ti-player-pause-filled';
+  }
+
+  function playStory(name) {
+    currentTrack = name;
+    document.getElementById('playTitle').textContent = name;
+    isPlaying = true;
+    document.getElementById('disc').classList.remove('paused');
+    document.getElementById('playIcon').className = 'ti ti-player-pause-filled';
+  }
+
+  function togglePlay() {
+    isPlaying = !isPlaying;
+    const disc = document.getElementById('disc');
+    const icon = document.getElementById('playIcon');
+    if (isPlaying) {
+      disc.classList.remove('paused');
+      icon.className = 'ti ti-player-pause-filled';
+    } else {
+      disc.classList.add('paused');
+      icon.className = 'ti ti-player-play-filled';
+    }
+  }
+
+  function nextTrack() {
+    const idx = (tracks.indexOf(currentTrack) + 1) % tracks.length;
+    playStory(tracks[idx]);
+  }
+
+  function switchTab(btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>
